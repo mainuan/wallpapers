@@ -1,0 +1,13 @@
+mainuan-wallpapers (2026.11.17) resolute; urgency=medium
+
+  * Primeiro pacote Debian: os papéis de parede são instalados em
+    /usr/share/wallpapers por um pacote versionado e verificável, em vez de
+    uma cópia do repositório git na ISO.
+  * Remove o diretório Next/, cópia modificada de arquivos dos pacotes
+    breeze-wallpaper e kubuntu-wallpapers; o papel de parede padrão passa a
+    ser configurado pelo mainuan-desktop-defaults, sem sobrescrever arquivos
+    do Kubuntu.
+  * CI: compilação, lintian e teste de instalação, reinstalação, remoção e
+    expurgo num Ubuntu 26.04 com os papéis de parede do Kubuntu instalados.
+
+ -- ruscher <rruscher@gmail.com>  Tue, 17 Nov 2026 11:19:46 -0300

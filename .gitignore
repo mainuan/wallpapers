@@ -1,0 +1,6 @@
+# Artefatos de dpkg-buildpackage / debhelper
+/debian/.debhelper/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/*.substvars
+/debian/mainuan-wallpapers/

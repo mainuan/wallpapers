@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v[0-9]*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+jobs:
+  package:
+    permissions:
+      contents: write # only the release job uses it, and only for v* tags
+    uses: mainuan/.github/.github/workflows/debian-package.yml@2409a50535befe90ac3bbfc4db6eed7d65eac4e5
+    with:
+      package: mainuan-wallpapers
+      release-title: Mainuan Wallpapers
+      # The source package must not carry .git or build leftovers.
+      test-command: |
+        dpkg-source -Zgzip -z1 --build .
+        tar -tzf ../mainuan-wallpapers_*.tar.gz > ../source-files.txt
+        if grep -E '(^|/)\.git(/|$)|/debian/(\.debhelper|debhelper-build-stamp|files$|.*\.substvars$|mainuan-wallpapers/)' ../source-files.txt; then
+          echo "::error::source package carries VCS or build files"; exit 1
+        fi
+        du -h ../mainuan-wallpapers_*.tar.gz
+        rm -f ../mainuan-wallpapers_*.dsc ../mainuan-wallpapers_*.tar.gz ../source-files.txt
+      # Kubuntu's own wallpapers are installed first: no file conflict, no
+      # diversion, and their files must stay byte-identical.
+      extra-install-packages: breeze-wallpaper kubuntu-wallpapers plasma-workspace-wallpapers file
+      smoke-command: |
+        n=0
+        while IFS= read -r f; do
+          case "$f" in
+            *.png) kind='^PNG image data' ;;
+            *.jpg|*.jpeg) kind='^JPEG image data' ;;
+            *.jxl) kind='JPEG XL' ;;
+            *) continue ;;
+          esac
+          out="$(file -b "$f")"
+          echo "$f: $out"
+          grep -q "$kind" <<<"$out"
+          n=$((n + 1))
+        done < <(dpkg -L mainuan-wallpapers)
+        test "$n" -eq 27
+        for c in 01ciano 02cinza 03magenta 04violet 05marrom 06lima; do
+          file -b "/usr/share/wallpapers/$c.png" | grep -q '1920 x 1080'
+        done
+        dpkg --verify breeze-wallpaper kubuntu-wallpapers plasma-workspace-wallpapers
+        dpkg -S /usr/share/wallpapers/Next/metadata.json | grep -q '^breeze-wallpaper:'
+        if dpkg-divert --list | grep -q mainuan; then exit 1; fi

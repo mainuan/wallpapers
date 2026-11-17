@@ -1,0 +1,27 @@
+Source: mainuan-wallpapers
+Section: x11
+Priority: optional
+Maintainer: Mainuan Packaging <openwebosbr@gmail.com>
+Uploaders: ruscher <rruscher@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+Homepage: https://github.com/mainuan/wallpapers
+Vcs-Browser: https://github.com/mainuan/wallpapers
+Vcs-Git: https://github.com/mainuan/wallpapers.git
+
+Package: mainuan-wallpapers
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Recommends: kimageformat6-plugins
+Description: papéis de parede do Mainuan Linux
+ Coleção de papéis de parede do Mainuan Linux para o KDE Plasma, instalada
+ em /usr/share/wallpapers: as seis cores de destaque (01ciano, 02cinza,
+ 03magenta, 04violet, 05marrom e 06lima), usadas pelo aplicativo de
+ boas-vindas e pelos padrões da área de trabalho, e ilustrações e fotos
+ adicionais.
+ .
+ Nenhum arquivo de outro pacote é substituído: os papéis de parede do Kubuntu
+ e do Plasma continuam intactos. Alguns arquivos usam o formato JPEG XL, que o
+ Plasma abre com o kimageformat6-plugins.
